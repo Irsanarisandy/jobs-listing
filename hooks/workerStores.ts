@@ -1,5 +1,8 @@
 import axios, { AxiosError } from "axios";
+import Toast from "react-native-toast-message";
 import { create } from "zustand";
+
+import { DEFAULTWORKERID } from "@/utils/fixedValues";
 
 export interface ShiftDate {
   startDate: string;
@@ -73,9 +76,6 @@ interface ProfileStore {
   reset: () => void; // only exist for used within testing
 }
 
-// for this project, default workerId is stated below (real life will not have this)
-const defaultWorkerId = "7f90df6e-b832-44e2-b624-3143d428001f";
-
 export const worker = axios.create({
   baseURL: "https://test.swipejobs.com/api/worker",
 });
@@ -85,7 +85,7 @@ export const useJobMatchesStore = create<JobMatchStore>((set, get, store) => ({
   loading: false,
   error: undefined,
   // real life will not have default worker id
-  fetchJobs: async (workerId = defaultWorkerId) => {
+  fetchJobs: async (workerId = DEFAULTWORKERID) => {
     set({ jobMatches: undefined, loading: true, error: undefined });
     await worker
       .get<JobMatch[]>(`/${workerId}/matches`)
@@ -105,7 +105,7 @@ export const useJobActionStore = create<JobActionStore>((set, _, store) => ({
   message: undefined,
   errorCode: undefined,
   // real life will not have default worker id
-  acceptJob: async (jobId: string, workerId = defaultWorkerId) => {
+  acceptJob: async (jobId: string, workerId = DEFAULTWORKERID) => {
     set({ success: true, message: undefined, errorCode: undefined });
     await worker
       .get<JobActionResponse>(`/${workerId}/job/${jobId}/accept`)
@@ -114,6 +114,11 @@ export const useJobActionStore = create<JobActionStore>((set, _, store) => ({
         if (!success) {
           set({ success, message, errorCode });
         }
+        const toastMessage = "You have successfully accepted this job!";
+        Toast.show({
+          type: success ? "success" : "error",
+          text1: success ? toastMessage : message,
+        });
       })
       .catch((error: AxiosError) => {
         set({
@@ -121,10 +126,14 @@ export const useJobActionStore = create<JobActionStore>((set, _, store) => ({
           message: error.message,
           errorCode: error.status != null ? `HTTP-${error.status}` : undefined,
         });
+        Toast.show({
+          type: "error",
+          text1: error.message,
+        });
       });
   },
   // real life will not have default worker id
-  rejectJob: async (jobId: string, workerId = defaultWorkerId) => {
+  rejectJob: async (jobId: string, workerId = DEFAULTWORKERID) => {
     set({ success: true, message: undefined, errorCode: undefined });
     await worker
       .get<JobActionResponse>(`/${workerId}/job/${jobId}/reject`)
@@ -133,12 +142,21 @@ export const useJobActionStore = create<JobActionStore>((set, _, store) => ({
         if (!success) {
           set({ success, message, errorCode });
         }
+        const toastMessage = "You have successfully rejected this job!";
+        Toast.show({
+          type: success ? "success" : "error",
+          text1: success ? toastMessage : message,
+        });
       })
       .catch((error: AxiosError) => {
         set({
           success: false,
           message: error.message,
           errorCode: error.status != null ? `HTTP-${error.status}` : undefined,
+        });
+        Toast.show({
+          type: "error",
+          text1: error.message,
         });
       });
   },
@@ -150,7 +168,7 @@ export const useProfileStore = create<ProfileStore>((set, _, store) => ({
   loading: false,
   error: undefined,
   // real life will not have default worker id
-  fetchProfile: async (workerId = defaultWorkerId) => {
+  fetchProfile: async (workerId = DEFAULTWORKERID) => {
     set({ profile: undefined, loading: true, error: undefined });
     await worker
       .get<Profile>(`/${workerId}/profile`)
