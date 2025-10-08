@@ -1,40 +1,15 @@
-# Welcome to your Expo app 👋
+## Decisions
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
-
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- Use [Jest](https://docs.expo.dev/develop/unit-testing/) for unit/integration testing.
+   - I didn't include snapshot tests as I consider it to be ineffective.
+   - I made tests for everything except for pages, as the components, hooks and utils are already isolated and have their own tests.
+- Use [Nativewind](https://www.nativewind.dev/docs) for styling.
+   - Enable to use TailwindCSS styling for React Native.
+- Use [Axios](https://axios-http.com/docs/intro) for handling HTTP requests.
+- Use [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction) for state management.
+   - Decide to use this to avoid too much hassle caused by using React Context and Reducer.
+- Expo already have file-based routing, so no need to implement React Navigation.
+- For this coding task, there's no point on implementing protected routes, as we can only test for one specific worker.
+   - i.e. the provided id will be used as the default worker id, mentioned in `utils/fixedValues.ts`.
+- Use [Toast](https://github.com/calintamas/react-native-toast-message) to display errors or success when approving/rejecting jobs.
+- I don't have a Macbook or an iPhone, so I can't test for iOS devices. Have tested for other devices.
