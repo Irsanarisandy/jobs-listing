@@ -9,11 +9,19 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
+import { useShallow } from "zustand/react/shallow";
 
 import { useProfileStore } from "@/hooks/workerStores";
 
 export default function Profile() {
-  const { fetchProfile, loading, error, profile } = useProfileStore();
+  const { fetchProfile, loading, error, profile } = useProfileStore(
+    useShallow((state) => ({
+      fetchProfile: state.fetchProfile,
+      loading: state.loading,
+      error: state.error,
+      profile: state.profile,
+    }))
+  );
   const { height } = useWindowDimensions();
   const [refreshing, setRefreshing] = useState(false);
 

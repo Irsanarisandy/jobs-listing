@@ -2,6 +2,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Platform, RefreshControl, ScrollView, View } from "react-native";
 import Toast from "react-native-toast-message";
+import { useShallow } from "zustand/react/shallow";
 
 import JobCard from "@/components/JobCard";
 import { JobMatch, useJobActionStore, useJobMatchesStore } from "@/hooks/workerStores";
@@ -13,8 +14,10 @@ type JobDetailsSearchParams = {
 
 export default function JobDetailsScreen() {
   const { jobId } = useLocalSearchParams<JobDetailsSearchParams>();
-  const { acceptJob, rejectJob } = useJobActionStore();
-  const { getJobDetails } = useJobMatchesStore();
+  const { acceptJob, rejectJob } = useJobActionStore(
+    useShallow((state) => ({ acceptJob: state.acceptJob, rejectJob: state.rejectJob }))
+  );
+  const getJobDetails = useJobMatchesStore((state) => state.getJobDetails);
   const [refreshing, setRefreshing] = useState(false);
   const [details, setDetails] = useState<JobMatch>();
 

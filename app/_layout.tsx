@@ -6,7 +6,7 @@ import { useProfileStore } from "@/hooks/workerStores";
 import "../global.css";
 
 export default function RootLayout() {
-  const { profile } = useProfileStore();
+  const profile = useProfileStore((state) => state.profile);
 
   const headerTitle = () => (
     <Pressable
